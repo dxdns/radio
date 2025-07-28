@@ -6,6 +6,7 @@
 		RangeInput,
 		Separator
 	} from "@dxdns/feflow-svelte"
+	import type { Snippet } from "svelte"
 
 	interface Props {
 		name?: string
@@ -14,10 +15,18 @@
 		volume: number
 		isVolumeOff: boolean
 		handleClick?: () => void
+		children: Snippet<[]>
 	}
 
-	let { name, image, isPlaying, volume, isVolumeOff, handleClick }: Props =
-		$props()
+	let {
+		name,
+		image,
+		isPlaying,
+		volume,
+		isVolumeOff,
+		handleClick,
+		children
+	}: Props = $props()
 </script>
 
 <Card
@@ -28,7 +37,6 @@
     display: flex;
     flex-direction: column;
     gap: 1rem;
-    align-items: center;
     "
 >
 	<div
@@ -149,6 +157,5 @@
 		</div>
 	</div>
 	<Separator />
-	<h3 class="text-muted">No track</h3>
-	<p class="text-muted">Played tracks will appear here</p>
+	{@render children?.()}
 </Card>

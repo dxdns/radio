@@ -13,7 +13,7 @@
 	let isLoading = $state(true)
 	let result: StationsType[] = $state([])
 	let countryCode: CountryCodeType = $state("BR")
-	let limit = $state(21)
+	let limit = $state(12)
 	let searchInputValue = $state("")
 	let currentStationuuid = $state("")
 	let isVolumeOff = $state(false)
@@ -132,13 +132,16 @@
 			</Select>
 		</label>
 		<br />
-		<div
-			style="
-			display: grid; 
-			grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-			gap: 1rem;
-			align-items: flex-start;
-			"
+
+		<RadioPlayer
+			name={currentStation?.name}
+			image={currentStation?.favicon}
+			{isPlaying}
+			{isVolumeOff}
+			{volume}
+			handleClick={() => {
+				playSound()
+			}}
 		>
 			<RadioStations
 				id={currentStation?.stationuuid}
@@ -153,18 +156,7 @@
 					playSound()
 				}}
 			/>
-
-			<RadioPlayer
-				name={currentStation?.name}
-				image={currentStation?.favicon}
-				{isPlaying}
-				{isVolumeOff}
-				{volume}
-				handleClick={() => {
-					playSound()
-				}}
-			/>
-		</div>
+		</RadioPlayer>
 	</main>
 </div>
 

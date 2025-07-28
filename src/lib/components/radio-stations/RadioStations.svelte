@@ -26,7 +26,7 @@
     display: grid; 
     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); 
     gap: 1rem;
-    max-height: 660px;
+    max-height: 320px;
     overflow-y: scroll;
     padding: 1rem 1rem 1rem 0;
     "
