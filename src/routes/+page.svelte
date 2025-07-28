@@ -1,9 +1,12 @@
 <script lang="ts">
+	import { BottomBar } from "@/components/bottom-bar"
+	import { RadioControls } from "@/components/radio-controls/index.js"
+	import { RadioInfo } from "@/components/radio-info/index.js"
 	import { RadioPlayer } from "@/components/radio-player/index.js"
 	import { RadioStations } from "@/components/radio-stations/index.js"
 	import apiService from "@/services/apiService.js"
 	import type { CountryCodeType, StationsType } from "@/types"
-	import { Card, SearchInput, Select } from "@dxdns/feflow-svelte"
+	import { Button, Card, SearchInput, Select } from "@dxdns/feflow-svelte"
 	import { onDestroy } from "svelte"
 
 	let { data } = $props()
@@ -47,13 +50,12 @@
 	}
 
 	function playSound() {
-		if(!currentStation) return
-		
+		if (!currentStation) return
 		const url = currentStation.url_resolved
 
 		function setAudio() {
 			audio = new Audio(url)
-			currentUrl = url!
+			currentUrl = url
 			play()
 		}
 
@@ -114,6 +116,18 @@
 	<title>Radio | {data.title}</title>
 </svelte:head>
 
+<BottomBar>
+	<RadioInfo
+		name={currentStation?.name}
+		image={currentStation?.favicon}
+		fontSize="13px;"
+		style="flex-direction: row;"
+		width="48px"
+		height="48px"
+	/>
+	<RadioControls bind:volume {isPlaying} handleClick={playSound} />
+</BottomBar>
+
 <div class="container">
 	<header
 		style="
@@ -166,15 +180,20 @@
 		<br />
 
 		<RadioPlayer
-			name={currentStation?.name}
-			image={currentStation?.favicon}
 			{isPlaying}
-			isVolumeOff={volume === 0}
 			bind:volume
 			handleClick={() => {
 				playSound()
 			}}
 		>
+			{#snippet radioInfo()}
+				<RadioInfo
+					name={currentStation?.name}
+					image={currentStation?.favicon}
+					width="150px"
+					height="150px"
+				/>
+			{/snippet}
 			<RadioStations
 				bind:currentId={currentStationuuid}
 				data={result}
