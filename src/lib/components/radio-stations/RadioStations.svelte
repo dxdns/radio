@@ -9,74 +9,105 @@
 	} from "@dxdns/feflow-svelte"
 
 	interface Props {
-		id?: string
+		currentId: string
 		data: StationsType[]
 		isLoading: boolean
 		isPlaying: boolean
-		handleClick?: (id: string) => void
-		handleMoreLimit: () => void
+		limit: number
+		handleClick: () => void
 	}
 
-	let { id, data, isLoading, isPlaying, handleClick, handleMoreLimit }: Props =
-		$props()
+	let {
+		currentId = $bindable(""),
+		data,
+		isLoading,
+		isPlaying,
+		limit = $bindable(0),
+		handleClick
+	}: Props = $props()
+
+	let hasTriggered = $state(false)
+
+	function handleMoreLimit() {
+		limit += 5
+		setTimeout(() => {
+			hasTriggered = false
+		}, 1000)
+	}
 </script>
 
 <div
 	style="
-    display: grid; 
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); 
-    gap: 1rem;
-    max-height: 320px;
-    overflow-y: scroll;
-    padding: 1rem 1rem 1rem 0;
-    "
+	max-height: 320px;
+	overflow-y: scroll;
+	padding: 1rem 1rem 1rem 0;
+	"
 >
-	{#each data as { name, favicon, stationuuid, tags } (stationuuid)}
-		{@const newName = name.replace(/^\./, "")}
-		<Skeleton {isLoading} variant="pulse" style="height: 80px;">
-			<Card
-				animatedBorder={id === stationuuid && isPlaying}
-				variant="contained"
-				style="
-                margin: 0;
-                display: flex; 
-                flex-direction: column; 
-                align-items: center;
-                justify-content: center;
-                cursor: pointer;
-                "
-				onclick={() => {
-					handleClick?.(stationuuid)
-				}}
-			>
-				<Avatar textFallback={newName} src={favicon} />
-				<p
+	<div
+		style="
+		display: grid; 
+		grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); 
+		gap: 1rem;
+		"
+	>
+		{#each data as { name, favicon, stationuuid, tags } (stationuuid)}
+			{@const newName = name.replace(/^\./, "")}
+			{@const isActive = currentId === stationuuid && isPlaying}
+			<Skeleton {isLoading} variant="pulse" style="height: 80px;">
+				<Card
+					animatedBorder={isActive && {
+						width: "5px"
+					}}
+					variant="contained"
 					style="
-                    width: 100%; 
-                    white-space: nowrap; 
-                    overflow: hidden; 
-                    text-overflow: ellipsis;
-                    text-align: center;
-                    "
+					margin: 0;
+					display: flex; 
+					flex-direction: column; 
+					align-items: center;
+					justify-content: center;
+					cursor: pointer;
+					"
+					onclick={() => {
+						currentId = stationuuid
+						handleClick()
+					}}
 				>
-					{newName}
-				</p>
-				{#if tags !== ""}
-					<div
+					<Avatar textFallback={newName} src={favicon} />
+					<p
 						style="
-                        display: flex; 
-                        gap: 0.5rem; 
-                        align-items: center;
-                        flex-wrap: wrap;
-                        "
+						width: 100%; 
+						white-space: nowrap; 
+						overflow: hidden; 
+						text-overflow: ellipsis;
+						text-align: center;
+						"
 					>
-						{#each tags.split(",").slice(0, 2) as tag (tag)}
-							<Badge>{tag}</Badge>
-						{/each}
-					</div>
-				{/if}
-			</Card>
-		</Skeleton>
-	{/each}
-	<VisibilityListener callback={handleMoreLimit} />
+						{newName}
+					</p>
+					{#if tags !== ""}
+						<div
+							style="
+							display: flex; 
+							gap: 0.5rem; 
+							align-items: center;
+							flex-wrap: wrap;
+							"
+						>
+							{#each tags.split(",").slice(0, 2) as tag (tag)}
+								<Badge>{tag}</Badge>
+							{/each}
+						</div>
+					{/if}
+				</Card>
+			</Skeleton>
+		{/each}
+	</div>
+
+	<VisibilityListener
+		callback={() => {
+			if (hasTriggered) return
+			hasTriggered = true
+			handleMoreLimit()
+		}}
+	/>
 </div>

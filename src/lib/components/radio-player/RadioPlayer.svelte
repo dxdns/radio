@@ -22,7 +22,7 @@
 		name,
 		image,
 		isPlaying,
-		volume,
+		volume = $bindable(0),
 		isVolumeOff,
 		handleClick,
 		children

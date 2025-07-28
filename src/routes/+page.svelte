@@ -16,7 +16,7 @@
 	let limit = $state(12)
 	let searchInputValue = $state("")
 	let currentStationuuid = $state("")
-	let isVolumeOff = $state(false)
+	let currentUrl = $state("")
 	let volume = $state(50)
 	let audio: HTMLAudioElement | null = $state(null)
 	let isPlaying = $state(false)
@@ -25,24 +25,53 @@
 		result.find((v) => v.stationuuid === currentStationuuid)
 	)
 
-	function playSound() {
-		if (!audio) {
-			audio = new Audio(currentStation?.url_resolved)
+	function reset() {
+		if (audio) {
+			audio.pause()
+			audio = null
+		}
+	}
+
+	function play() {
+		if (audio) {
 			audio.play()
 			isPlaying = true
-		} else if (
-			currentStation &&
-			audio.currentSrc !== currentStation.url_resolved
-		) {
-			audio.src = currentStation?.url_resolved
-			audio.play()
-			isPlaying = true
-		} else if (audio.paused) {
-			audio.play()
-			isPlaying = true
-		} else {
+		}
+	}
+
+	function pause() {
+		if (audio) {
 			audio.pause()
 			isPlaying = false
+		}
+	}
+
+	function playSound() {
+		if(!currentStation) return
+		
+		const url = currentStation.url_resolved
+
+		function setAudio() {
+			audio = new Audio(url)
+			currentUrl = url!
+			play()
+		}
+
+		if (!audio) {
+			setAudio()
+			return
+		}
+
+		if (url && url !== currentUrl) {
+			reset()
+			setAudio()
+			return
+		}
+
+		if (isPlaying) {
+			pause()
+		} else {
+			play()
 		}
 	}
 
@@ -50,10 +79,8 @@
 		isLoading = true
 		try {
 			const response = await api.get(limit, countryCode, searchInputValue)
-			if (!response.ok) return
+			if (!response.ok) throw new Error("error")
 			result = await response.json()
-		} catch (err) {
-			console.error("Erro ao buscar estações:", err)
 		} finally {
 			isLoading = false
 		}
@@ -72,9 +99,14 @@
 		fetchData()
 	})
 
+	$effect(() => {
+		if (audio) {
+			audio.volume = volume / 100
+		}
+	})
+
 	onDestroy(() => {
-		audio?.pause()
-		audio = null
+		reset()
 	})
 </script>
 
@@ -137,24 +169,19 @@
 			name={currentStation?.name}
 			image={currentStation?.favicon}
 			{isPlaying}
-			{isVolumeOff}
-			{volume}
+			isVolumeOff={volume === 0}
+			bind:volume
 			handleClick={() => {
 				playSound()
 			}}
 		>
 			<RadioStations
-				id={currentStation?.stationuuid}
+				bind:currentId={currentStationuuid}
 				data={result}
 				{isLoading}
 				{isPlaying}
-				handleMoreLimit={() => {
-					limit += 5
-				}}
-				handleClick={(id) => {
-					currentStationuuid = id
-					playSound()
-				}}
+				bind:limit
+				handleClick={playSound}
 			/>
 		</RadioPlayer>
 	</main>
