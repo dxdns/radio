@@ -21,9 +21,7 @@
 </script>
 
 <div class="radioInfo" style={rest.style}>
-	<div style="flex-shrink: 0;">
-		<Avatar {width} {height} textFallback={name ?? "?"} src={image} />
-	</div>
+	<Avatar {width} {height} textFallback={name ?? "?"} src={image} />
 	{#if name}
 		<h2
 			style="

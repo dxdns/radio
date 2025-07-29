@@ -6,7 +6,13 @@
 	import { RadioStations } from "@/components/radio-stations/index.js"
 	import apiService from "@/services/apiService.js"
 	import type { CountryCodeType, StationsType } from "@/types"
-	import { Button, Card, SearchInput, Select } from "@dxdns/feflow-svelte"
+	import {
+		BottomSheet,
+		Button,
+		Card,
+		SearchInput,
+		Select
+	} from "@dxdns/feflow-svelte"
 	import { onDestroy } from "svelte"
 
 	let { data } = $props()
@@ -116,17 +122,25 @@
 	<title>Radio | {data.title}</title>
 </svelte:head>
 
-<BottomBar>
-	<RadioInfo
-		name={currentStation?.name}
-		image={currentStation?.favicon}
-		fontSize="13px;"
-		style="flex-direction: row;"
-		width="48px"
-		height="48px"
-	/>
-	<RadioControls bind:volume {isPlaying} handleClick={playSound} />
-</BottomBar>
+<BottomSheet
+	isOpen={true}
+	handleClose={() => {}}
+	style="min-height: 5vh; height: 5vh; max-height: 10vh;"
+>
+	<div style="position: absolute; top: 50%; left: 50px; transform: translate(0, -50%);">
+		<RadioInfo
+			name={currentStation?.name}
+			image={currentStation?.favicon}
+			fontSize="13px;"
+			style="flex-direction: row;"
+			width="48px"
+			height="48px"
+		/>
+	</div>
+	<div style="position: absolute; top: 50%; right: 50px; transform: translate(0, -50%);">
+		<RadioControls bind:volume {isPlaying} handleClick={playSound} />
+	</div>
+</BottomSheet>
 
 <div class="container">
 	<header
