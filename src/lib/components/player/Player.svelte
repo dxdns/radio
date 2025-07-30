@@ -10,7 +10,7 @@
 		isPlaying: boolean
 		volume: number
 		handleClick?: () => void
-		radioInfo: Snippet<[]>
+		radioInfo?: Snippet<[]>
 		children: Snippet<[]>
 	}
 
@@ -23,37 +23,55 @@
 	}: Props = $props()
 
 	const isMd = $derived(useMediaQuery("max-width", "md"))
+	const isSm = $derived(useMediaQuery("max-width", "sm"))
 
 	onDestroy(() => {
 		isMd.destroy()
+		isSm.destroy()
 	})
 </script>
 
 <Card
 	variant="contained"
 	style="
-    min-height: 100vh; 
     margin: 0;
     display: flex;
     flex-direction: column;
     gap: 1rem;
 	align-items: {isMd.value ? 'center' : 'stretch'};
+
+	{isSm.value &&
+		`
+		position: fixed;
+		z-index: 1;
+		top: 0;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		padding-top: 8rem;
+		border-radius: 0;
+		padding-bottom: 2rem;
+		background: var(--ff-surface);
+		`}
     "
 >
-	{@render radioInfo?.()}
-	<div
-		style="
-		display: flex; 
-		gap: 1rem; 
-		justify-content: center; 
-		flex-wrap: wrap;
-		"
-	>
-		<ControlCast />
-		<ControlPlay {isPlaying} {handleClick} />
-		<ControlInfo />
-		<ControlAudio bind:volume />
-	</div>
-	<Separator />
+	{#if !isMd.value}
+		{@render radioInfo?.()}
+
+		<div
+			style="
+			display: flex; 
+			gap: 1rem; 
+			justify-content: center; 
+			flex-wrap: wrap;
+			"
+		>
+			<ControlCast />
+			<ControlPlay {isPlaying} {handleClick} />
+			<ControlInfo />
+			<ControlAudio bind:volume />
+		</div>
+		<Separator />
+	{/if}
 	{@render children?.()}
 </Card>

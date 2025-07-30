@@ -36,18 +36,11 @@
 	}
 </script>
 
-<div
-	style="
-	max-height: 60vh;
-	overflow-y: scroll;
-	padding: 1rem 1rem 1rem 0;
-    box-sizing: border-box;
-	"
->
+<div class="container">
 	<div
 		style="
 		display: grid; 
-		grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); 
+		grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); 
 		gap: 1rem;
 		"
 	>
@@ -112,3 +105,23 @@
 		}}
 	/>
 </div>
+
+<style>
+	.container {
+		max-height: 60vh;
+		overflow-y: auto;
+		padding: 1rem;
+		box-sizing: border-box;
+		width: 100%;
+	}
+
+	@media screen and (max-width: 425px) {
+		.container {
+			max-height: 100%;
+		}
+
+		.container::-webkit-scrollbar {
+			display: none;
+		}
+	}
+</style>

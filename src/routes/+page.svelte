@@ -1,7 +1,5 @@
 <script lang="ts">
-	import { ControlAudio } from "@/components/control-audio/index.js"
 	import { ControlBar } from "@/components/control-bar"
-	import { ControlPlay } from "@/components/control-play/index.js"
 	import { Info } from "@/components/info/index.js"
 	import { Player } from "@/components/player/index.js"
 	import { Stations } from "@/components/stations/index.js"
@@ -9,6 +7,7 @@
 	import type { CountryCodeType, StationsType } from "@/types/index.js"
 	import {
 		Card,
+		Navbar,
 		SearchInput,
 		Select,
 		useMediaQuery
@@ -29,6 +28,7 @@
 	let isPlaying = $state(false)
 
 	const api = apiService()
+	const isSm = $derived(useMediaQuery("max-width", "sm"))
 
 	const currentStation = $derived(
 		result.find((v) => v.stationuuid === currentStationuuid)
@@ -115,6 +115,7 @@
 
 	onDestroy(() => {
 		reset()
+		isSm.destroy()
 	})
 </script>
 
@@ -131,15 +132,28 @@
 />
 
 <div class="container">
-	<header
+	<h1>Radio 📻</h1>
+
+	<Navbar
 		style="
-		display: flex; 
-		flex-direction: column; 
+		position: {isSm.value ? 'fixed' : 'sticky'};
+		top: 0;
+		left: 0;
+		right: 0;
+		z-index: 900;
+		border-radius: {isSm.value ? '0' : '15px'};
+		height: auto;
+		padding: 1rem;
+		flex-wrap: wrap;
 		gap: 1rem;
+		background: color-mix(in srgb, var(--ff-surface), black 10%);
+		{!isSm.value && 'box-shadow: 0 0 10px rgba(0,0,0,0.1);'}
 		"
 	>
-		<h1>Radio 📻</h1>
-		<form onsubmit={handleSubmit}>
+		<form
+			onsubmit={handleSubmit}
+			style="width: {isSm.value ? '100%' : 'auto'};"
+		>
 			<SearchInput
 				id="searchInputValue"
 				name="searchInputValue"
@@ -152,22 +166,15 @@
 				}}
 			/>
 		</form>
-		<Card
-			style="
-			display: flex; 
-			justify-content: center; 
-			align-items: center;
-			background: color-mix(in srgb, rgb(134, 94, 60) 70%, white);
-			padding: 2rem;
-			"
-		>
-			<h2 style="margin: 0;">Discover over 50,000 public stations</h2>
-		</Card>
-	</header>
 
-	<main>
-		<label for="country" style="display: flex; align-items: center; gap: 1rem;">
-			Country:
+		<div style="flex: 1;"></div>
+
+		<label
+			class="muted"
+			for="country"
+			style="display: flex; align-items: center; gap: 1rem;"
+		>
+			<small>Country:</small>
 			<Select
 				id="country"
 				onchange={(e) => {
@@ -179,8 +186,23 @@
 				<option value="US">EUA</option>
 			</Select>
 		</label>
-		<br />
+	</Navbar>
 
+	{#if !isSm.value}
+		<Card
+			style="
+			display: flex; 
+			justify-content: center; 
+			align-items: center;
+			background: color-mix(in srgb, rgb(134, 94, 60) 70%, white);
+			padding: 2rem;
+			"
+		>
+			<h2 style="margin: 0;">Discover over 50,000 public stations</h2>
+		</Card>
+	{/if}
+
+	<main>
 		<Player
 			{isPlaying}
 			bind:volume
@@ -196,6 +218,7 @@
 					height="150px"
 				/>
 			{/snippet}
+
 			<Stations
 				bind:currentId={currentStationuuid}
 				data={result}
