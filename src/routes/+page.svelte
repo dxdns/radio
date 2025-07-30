@@ -1,17 +1,21 @@
 <script lang="ts">
 	import { ControlAudio } from "@/components/control-audio/index.js"
+	import { ControlBar } from "@/components/control-bar"
 	import { ControlPlay } from "@/components/control-play/index.js"
 	import { Info } from "@/components/info/index.js"
 	import { Player } from "@/components/player/index.js"
 	import { Stations } from "@/components/stations/index.js"
 	import apiService from "@/services/apiService.js"
 	import type { CountryCodeType, StationsType } from "@/types/index.js"
-	import { BottomSheet, Card, SearchInput, Select } from "@dxdns/feflow-svelte"
+	import {
+		Card,
+		SearchInput,
+		Select,
+		useMediaQuery
+	} from "@dxdns/feflow-svelte"
 	import { onDestroy } from "svelte"
 
 	let { data } = $props()
-
-	const api = apiService()
 
 	let isLoading = $state(true)
 	let result: StationsType[] = $state([])
@@ -23,6 +27,8 @@
 	let volume = $state(50)
 	let audio: HTMLAudioElement | null = $state(null)
 	let isPlaying = $state(false)
+
+	const api = apiService()
 
 	const currentStation = $derived(
 		result.find((v) => v.stationuuid === currentStationuuid)
@@ -116,45 +122,13 @@
 	<title>Radio | {data.title}</title>
 </svelte:head>
 
-<BottomSheet
-	isOpen={true}
-	handleClose={() => {}}
-	style="
-	min-height: 15vh; 
-	height: 15vh; 
-	max-height: 25vh;
-	"
->
-	<div
-		style="
-		display: flex; 
-		justify-content: center; 
-		flex-wrap: wrap; 
-		align-items: center;
-		gap: 1rem;
-		"
-	>
-		<div
-			style="
-			display: flex; 
-			gap: 1rem; 
-			align-items: center; 
-			justify-content: center;
-			"
-		>
-			<Info
-				name={currentStation?.name}
-				image={currentStation?.favicon}
-				fontSize="13px;"
-				style="flex-direction: row;"
-				width="48px"
-				height="48px"
-			/>
-			<ControlPlay {isPlaying} handleClick={playSound} />
-		</div>
-		<ControlAudio bind:volume />
-	</div>
-</BottomSheet>
+<ControlBar
+	name={currentStation?.name}
+	image={currentStation?.favicon}
+	{isPlaying}
+	bind:volume
+	handleClick={playSound}
+/>
 
 <div class="container">
 	<header
