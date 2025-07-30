@@ -1,18 +1,12 @@
 <script lang="ts">
-	import { BottomBar } from "@/components/bottom-bar"
-	import { RadioControls } from "@/components/radio-controls/index.js"
-	import { RadioInfo } from "@/components/radio-info/index.js"
-	import { RadioPlayer } from "@/components/radio-player/index.js"
-	import { RadioStations } from "@/components/radio-stations/index.js"
+	import { ControlAudio } from "@/components/control-audio/index.js"
+	import { ControlPlay } from "@/components/control-play/index.js"
+	import { Info } from "@/components/info/index.js"
+	import { Player } from "@/components/player/index.js"
+	import { Stations } from "@/components/stations/index.js"
 	import apiService from "@/services/apiService.js"
-	import type { CountryCodeType, StationsType } from "@/types"
-	import {
-		BottomSheet,
-		Button,
-		Card,
-		SearchInput,
-		Select
-	} from "@dxdns/feflow-svelte"
+	import type { CountryCodeType, StationsType } from "@/types/index.js"
+	import { BottomSheet, Card, SearchInput, Select } from "@dxdns/feflow-svelte"
 	import { onDestroy } from "svelte"
 
 	let { data } = $props()
@@ -125,20 +119,40 @@
 <BottomSheet
 	isOpen={true}
 	handleClose={() => {}}
-	style="min-height: 5vh; height: 5vh; max-height: 10vh;"
+	style="
+	min-height: 15vh; 
+	height: 15vh; 
+	max-height: 25vh;
+	"
 >
-	<div style="position: absolute; top: 50%; left: 50px; transform: translate(0, -50%);">
-		<RadioInfo
-			name={currentStation?.name}
-			image={currentStation?.favicon}
-			fontSize="13px;"
-			style="flex-direction: row;"
-			width="48px"
-			height="48px"
-		/>
-	</div>
-	<div style="position: absolute; top: 50%; right: 50px; transform: translate(0, -50%);">
-		<RadioControls bind:volume {isPlaying} handleClick={playSound} />
+	<div
+		style="
+		display: flex; 
+		justify-content: center; 
+		flex-wrap: wrap; 
+		align-items: center;
+		gap: 1rem;
+		"
+	>
+		<div
+			style="
+			display: flex; 
+			gap: 1rem; 
+			align-items: center; 
+			justify-content: center;
+			"
+		>
+			<Info
+				name={currentStation?.name}
+				image={currentStation?.favicon}
+				fontSize="13px;"
+				style="flex-direction: row;"
+				width="48px"
+				height="48px"
+			/>
+			<ControlPlay {isPlaying} handleClick={playSound} />
+		</div>
+		<ControlAudio bind:volume />
 	</div>
 </BottomSheet>
 
@@ -193,7 +207,7 @@
 		</label>
 		<br />
 
-		<RadioPlayer
+		<Player
 			{isPlaying}
 			bind:volume
 			handleClick={() => {
@@ -201,14 +215,14 @@
 			}}
 		>
 			{#snippet radioInfo()}
-				<RadioInfo
+				<Info
 					name={currentStation?.name}
 					image={currentStation?.favicon}
 					width="150px"
 					height="150px"
 				/>
 			{/snippet}
-			<RadioStations
+			<Stations
 				bind:currentId={currentStationuuid}
 				data={result}
 				{isLoading}
@@ -216,7 +230,7 @@
 				bind:limit
 				handleClick={playSound}
 			/>
-		</RadioPlayer>
+		</Player>
 	</main>
 </div>
 

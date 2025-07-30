@@ -38,9 +38,10 @@
 
 <div
 	style="
-	max-height: 320px;
+	max-height: 60vh;
 	overflow-y: scroll;
 	padding: 1rem 1rem 1rem 0;
+    box-sizing: border-box;
 	"
 >
 	<div

@@ -44,6 +44,10 @@
 		font-display: swap;
 	}
 
+	:global(:focus-visible) {
+		outline: none;
+	}
+
 	:global(body) {
 		margin: 0;
 		padding: 0;

@@ -1,7 +1,10 @@
 <script lang="ts">
 	import { Card, Separator, useMediaQuery } from "@dxdns/feflow-svelte"
 	import { onDestroy, type Snippet } from "svelte"
-	import { RadioControls } from "../radio-controls"
+	import { ControlPlay } from "../control-play"
+	import { ControlAudio } from "../control-audio"
+	import { ControlCast } from "../control-cast"
+	import { ControlInfo } from "../control-info"
 
 	interface Props {
 		isPlaying: boolean
@@ -38,7 +41,19 @@
     "
 >
 	{@render radioInfo?.()}
-	<RadioControls bind:volume {isPlaying} {handleClick} />
+	<div
+		style="
+		display: flex; 
+		gap: 1rem; 
+		justify-content: center; 
+		flex-wrap: wrap;
+		"
+	>
+		<ControlCast />
+		<ControlPlay {isPlaying} {handleClick} />
+		<ControlInfo />
+		<ControlAudio bind:volume />
+	</div>
 	<Separator />
 	{@render children?.()}
 </Card>
