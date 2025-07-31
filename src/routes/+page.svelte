@@ -7,6 +7,7 @@
 	import type { CountryCodeType, StationsType } from "@/types/index.js"
 	import {
 		Card,
+		Link,
 		Navbar,
 		SearchInput,
 		Select,
@@ -158,6 +159,10 @@
 
 <svelte:head>
 	<title>Radio | {data.title}</title>
+	<meta
+		name="description"
+		content="Discover live streams, top hits, and your favorite stations anytime, anywhere."
+	/>
 </svelte:head>
 
 <ControlBar
@@ -169,7 +174,9 @@
 />
 
 <div class="container">
-	<h1>Radio 📻</h1>
+	<Link href="/">
+		<h1>Radio 📻</h1>
+	</Link>
 
 	<Navbar
 		style="
