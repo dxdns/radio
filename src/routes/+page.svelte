@@ -12,7 +12,7 @@
 		Select,
 		useMediaQuery
 	} from "@dxdns/feflow-svelte"
-	import { onDestroy, onMount } from "svelte"
+	import { onDestroy } from "svelte"
 
 	let { data } = $props()
 
@@ -184,7 +184,7 @@
 		flex-wrap: wrap;
 		gap: 1rem;
 		background: color-mix(in srgb, var(--ff-surface), black 10%);
-		{!isSm.value && 'box-shadow: 0 0 10px rgba(0,0,0,0.1);'}
+		box-shadow: 0 0 10px rgba(0,0,0,0.1);
 		"
 	>
 		<form
@@ -195,7 +195,7 @@
 				id="searchInputValue"
 				name="searchInputValue"
 				variant="outlined"
-				placeholder={"Search stations..."}
+				placeholder="Search stations..."
 				oninput={(e) => {
 					if (e.currentTarget.value === "") {
 						searchInputValue = ""

@@ -40,7 +40,7 @@
 	<div
 		style="
 		display: grid; 
-		grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); 
+		grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); 
 		gap: 1rem;
 		"
 	>
@@ -55,10 +55,6 @@
 					variant="contained"
 					style="
 					margin: 0;
-					display: flex; 
-					flex-direction: column; 
-					align-items: center;
-					justify-content: center;
 					cursor: pointer;
 					gap: 1rem;
 					"
@@ -79,11 +75,11 @@
 						<Avatar textFallback={newName} src={favicon} />
 						<p
 							style="
-							flex: 1;
 							white-space: nowrap;
 							overflow: hidden;
 							text-overflow: ellipsis;
 							margin: 0;
+							flex: 1;
 					"
 						>
 							{newName}
@@ -96,10 +92,11 @@
 							gap: 0.5rem; 
 							align-items: center;
 							flex-wrap: wrap;
+							justify-content: flex-end;
 							"
 						>
 							{#each tags.split(",").slice(0, 2) as tag (tag)}
-								<Badge>{tag}</Badge>
+								<Badge variant="outlined">{tag}</Badge>
 							{/each}
 						</div>
 					{/if}

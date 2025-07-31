@@ -50,8 +50,8 @@
 		right: 0;
 		padding-top: 7rem;
 		border-radius: 0;
-		padding-bottom: 4rem;
-		background: var(--ff-surface);
+		padding-bottom: 3.7rem;
+		background: color-mix(in srgb, var(--ff-surface) 80%, black);
 		`}
     "
 >
