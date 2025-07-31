@@ -33,6 +33,7 @@
 	},
 	"dependencies": {
 		"@dxdns/feflow-core": "^0.0.20",
-		"@dxdns/feflow-svelte": "^0.0.19"
+		"@dxdns/feflow-svelte": "^0.0.19",
+		"zod": "^4.0.14"
 	}
 }

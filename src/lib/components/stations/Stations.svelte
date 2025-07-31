@@ -60,24 +60,35 @@
 					align-items: center;
 					justify-content: center;
 					cursor: pointer;
+					gap: 1rem;
 					"
 					onclick={() => {
 						currentId = stationuuid
 						handleClick()
 					}}
 				>
-					<Avatar textFallback={newName} src={favicon} />
-					<p
+					<div
 						style="
+						display: flex; 
+						align-items: center; 
+						gap: 0.5rem; 
 						width: 100%; 
-						white-space: nowrap; 
-						overflow: hidden; 
-						text-overflow: ellipsis;
-						text-align: center;
-						"
+						justify-content: center;
+				"
 					>
-						{newName}
-					</p>
+						<Avatar textFallback={newName} src={favicon} />
+						<p
+							style="
+							flex: 1;
+							white-space: nowrap;
+							overflow: hidden;
+							text-overflow: ellipsis;
+							margin: 0;
+					"
+						>
+							{newName}
+						</p>
+					</div>
 					{#if tags !== ""}
 						<div
 							style="

@@ -12,7 +12,7 @@
 		Select,
 		useMediaQuery
 	} from "@dxdns/feflow-svelte"
-	import { onDestroy } from "svelte"
+	import { onDestroy, onMount } from "svelte"
 
 	let { data } = $props()
 
@@ -26,6 +26,8 @@
 	let volume = $state(50)
 	let audio: HTMLAudioElement | null = $state(null)
 	let isPlaying = $state(false)
+	let currentSound: string | undefined = $state()
+	let eventSource: EventSource | null = $state(null)
 
 	const api = apiService()
 	const isSm = $derived(useMediaQuery("max-width", "sm"))
@@ -34,21 +36,28 @@
 		result.find((v) => v.stationuuid === currentStationuuid)
 	)
 
-	function reset() {
+	function resetAudio() {
 		if (audio) {
 			audio.pause()
 			audio = null
 		}
 	}
 
-	function play() {
+	function resetEventSource() {
+		if (eventSource) {
+			eventSource.close()
+			eventSource = null
+		}
+	}
+
+	function playAudio() {
 		if (audio) {
 			audio.play()
 			isPlaying = true
 		}
 	}
 
-	function pause() {
+	function pauseAudio() {
 		if (audio) {
 			audio.pause()
 			isPlaying = false
@@ -58,28 +67,39 @@
 	function playSound() {
 		if (!currentStation) return
 		const url = currentStation.url_resolved
+		const name = currentStation.name
 
 		function setAudio() {
+			resetAudio()
 			audio = new Audio(url)
 			currentUrl = url
-			play()
+			currentSound = name
+			playAudio()
+		}
+
+		function setEventSource() {
+			resetEventSource()
+			eventSource = new EventSource(
+				`/api/meta-data?streamUrl=${encodeURIComponent(url)}`
+			)
 		}
 
 		if (!audio) {
 			setAudio()
+			setEventSource()
 			return
 		}
 
 		if (url && url !== currentUrl) {
-			reset()
 			setAudio()
+			setEventSource()
 			return
 		}
 
 		if (isPlaying) {
-			pause()
+			pauseAudio()
 		} else {
-			play()
+			playAudio()
 		}
 	}
 
@@ -113,8 +133,25 @@
 		}
 	})
 
+	$effect(() => {
+		if (eventSource) {
+			eventSource.onmessage = (e) => {
+				if (e.data === "Unknown") {
+					currentSound = currentStation?.name
+				} else {
+					currentSound = e.data
+				}
+			}
+
+			eventSource.onerror = () => {
+				currentSound = currentStation?.name ?? "Error loading metadata."
+			}
+		}
+	})
+
 	onDestroy(() => {
-		reset()
+		resetAudio()
+		resetEventSource()
 		isSm.destroy()
 	})
 </script>
@@ -124,7 +161,7 @@
 </svelte:head>
 
 <ControlBar
-	name={currentStation?.name}
+	name={currentSound}
 	image={currentStation?.favicon}
 	{isPlaying}
 	bind:volume
