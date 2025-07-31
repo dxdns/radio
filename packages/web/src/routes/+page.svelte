@@ -13,7 +13,7 @@
 		Select,
 		useMediaQuery
 	} from "@dxdns/feflow-svelte"
-	import { onDestroy } from "svelte"
+	import { onDestroy, onMount } from "svelte"
 
 	let { data } = $props()
 
@@ -32,6 +32,7 @@
 
 	const api = apiService()
 	const isSm = $derived(useMediaQuery("max-width", "sm"))
+	const storageKey = "currentStationuuid"
 
 	const currentStation = $derived(
 		result.find((v) => v.stationuuid === currentStationuuid)
@@ -65,6 +66,14 @@
 		}
 	}
 
+	function setStorage() {
+		localStorage.setItem(storageKey, currentStationuuid)
+	}
+
+	function getStorage() {
+		return localStorage.getItem(storageKey)
+	}
+
 	function playSound() {
 		if (!currentStation) return
 		const url = currentStation.url_resolved
@@ -76,6 +85,7 @@
 			currentUrl = url
 			currentSound = name
 			playAudio()
+			setStorage()
 		}
 
 		function setEventSource() {
@@ -150,6 +160,13 @@
 		}
 	})
 
+	onMount(() => {
+		const uuid = getStorage()
+		if (uuid) {
+			currentStationuuid = uuid
+		}
+	})
+
 	onDestroy(() => {
 		resetAudio()
 		resetEventSource()
@@ -166,7 +183,7 @@
 </svelte:head>
 
 <ControlBar
-	name={currentSound}
+	name={currentSound ?? currentStation?.name}
 	image={currentStation?.favicon}
 	{isPlaying}
 	bind:volume
