@@ -1,0 +1,25 @@
+{
+  "name": "mobile",
+  "version": "1.0.0",
+  "description": "",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "dev": "flutter run",
+    "build": "flutter build apk",
+    "clean": "flutter clean"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dxdns/radio-app.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/dxdns/radio-app/issues"
+  },
+  "homepage": "https://github.com/dxdns/radio-app#readme"
+}
