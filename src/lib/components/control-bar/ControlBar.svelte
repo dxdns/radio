@@ -35,7 +35,7 @@
 	position: fixed; 
 	bottom: 0; 
 	z-index: 999; 
-	height: 40px; 
+	height: 60px; 
 	box-shadow: 0 0 10px rgba(0,0,0,0.1);
 	left: 0;
     right: 0;

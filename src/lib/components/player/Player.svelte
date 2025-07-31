@@ -48,9 +48,9 @@
 		bottom: 0;
 		left: 0;
 		right: 0;
-		padding-top: 8rem;
+		padding-top: 7rem;
 		border-radius: 0;
-		padding-bottom: 2rem;
+		padding-bottom: 4rem;
 		background: var(--ff-surface);
 		`}
     "
